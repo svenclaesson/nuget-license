@@ -31,6 +31,7 @@
   "http://www.microsoft.com/web/webpi/eula/net_library_eula_enu.htm": "MS-EULA",
   "https://www.microsoft.com/web/webpi/eula/net_library_eula_enu.htm": "MS-EULA",
   "http://www.microsoft.com/web/webpi/eula/net_library_eula_ENU.htm": "MS-EULA",
+  "https://www.microsoft.com/en-us/web/webpi/eula/net_library_eula_ENU.htm": "MS-EULA",
   "http://go.microsoft.com/fwlink/?LinkId=329770": "MS-EULA",
   "http://go.microsoft.com/fwlink/?LinkId=529443": "MS-EULA",
 
@@ -43,4 +44,5 @@
   
   "https://github.com/Azure/DotNetty/blob/master/LICENSE.txt": "MIT",
   "https://github.com/Azure/azure-storage-net/blob/master/LICENSE.txt": "Apache-2.0",
+  "https://github.com/Azure/azure-amqp/blob/master/LICENSE.txt": "MIT"
 }
