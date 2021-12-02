@@ -78,5 +78,13 @@
     "Description": "Device SDK for Azure IoT Hub",
     "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Client/1.39.0/License",
     "LicenseType": "MIT"
+  },
+  {
+    "PackageName": "Microsoft.Azure.Devices.Client",
+    "PackageVersion": "1.39.1-preview-ge-001",
+    "PackageUrl": "https://github.com/Azure/azure-iot-sdk-csharp",
+    "Description": "Device SDK for Azure IoT Hub",
+    "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Client/1.39.0/License",
+    "LicenseType": "MIT"
   }
 ]
