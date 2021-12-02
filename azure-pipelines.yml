@@ -26,6 +26,12 @@ stages:
       - job: Test
         displayName: 'Test'
         steps:
+        - task: UseDotNet@2
+          displayName: 'Install .NET 6 SDK'
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+            performMultiLevelLookup: true
         - task: DotNetCoreCLI@2
           displayName: 'Restore Nuget Packages'
           inputs:
@@ -75,6 +81,12 @@ stages:
       - job: BuildAndPublish
         displayName: 'Build and Publish'
         steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET 6 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '6.0.x'
+              performMultiLevelLookup: true
           - task: DotNetCoreCLI@2
             displayName: 'Restore Nuget Packages'
             inputs:
