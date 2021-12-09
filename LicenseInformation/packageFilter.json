@@ -10,5 +10,6 @@
   "GE.Heimdall.CommunicationSDK",
   "GE.Heimdall.RpcSdk",
   "GE.Azure.Serialization",
-  "GE.Heimdall.WindApp.Data"
+  "GE.Heimdall.WindApp.Data",
+  "NUnit"
 ]
