@@ -86,5 +86,13 @@
     "Description": "Device SDK for Azure IoT Hub",
     "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Client/1.39.0/License",
     "LicenseType": "MIT"
+  },
+  {
+    "PackageName": "Knx.Falcon.Sdk",
+    "PackageVersion": "6.0.4147",
+    "PackageUrl": "https://support.knx.org/hc/en-us/articles/4411913050514-Falcon-6-NET-SDK",
+    "Description": "This is the first version of the new Falcon generation 6. It features a modern async API and support for the new KNX system extensions like RF Multi, Segment Coupler and Security Proxy.",
+    "LicenseUrl": "https://support.knx.org/hc/en-us/articles/360002909959",
+    "LicenseType": "KNX-Tool-SoftwareLicense"
   }
 ]
