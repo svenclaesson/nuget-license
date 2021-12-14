@@ -214,6 +214,7 @@ namespace NugetUtility.Tests {
             list.Should().ContainKey("System.Buffers,4.3.0");
         }
 
+        [Ignore("azure devops cannot connect to url")]
         [TestCase("BenchmarkDotNet", "0.12.1", "https://licenses.nuget.org/MIT", "MIT")]
         [TestCase("BCrypt.Net-Next", "2.1.3", "https://github.com/BcryptNet/bcrypt.net/blob/master/licence.txt", "")]
         [TestCase("System.Memory", "4.5.4", "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT", "MIT")]
