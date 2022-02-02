@@ -72,6 +72,14 @@
     "LicenseType": "MIT"
   },
   {
+    "PackageName": "Microsoft.Azure.Devices.Shared",
+    "PackageVersion": "1.30.1",
+    "PackageUrl": "https://github.com/Azure/azure-iot-sdk-csharp",
+    "Description": "Common code for Azure IoT Device and Service SDKs",
+    "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Shared/1.30.1/License",
+    "LicenseType": "MIT"
+  },
+  {
     "PackageName": "Microsoft.Azure.Devices.Client",
     "PackageVersion": "1.39.0",
     "PackageUrl": "https://github.com/Azure/azure-iot-sdk-csharp",
@@ -85,6 +93,14 @@
     "PackageUrl": "https://github.com/Azure/azure-iot-sdk-csharp",
     "Description": "Device SDK for Azure IoT Hub",
     "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Client/1.39.0/License",
+    "LicenseType": "MIT"
+  },
+  {
+    "PackageName": "Microsoft.Azure.Devices.Client",
+    "PackageVersion": "1.40.0",
+    "PackageUrl": "https://github.com/Azure/azure-iot-sdk-csharp",
+    "Description": "Device SDK for Azure IoT Hub",
+    "LicenseUrl": "https://www.nuget.org/packages/Microsoft.Azure.Devices.Client/1.40.0/License",
     "LicenseType": "MIT"
   },
   {
