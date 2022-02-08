@@ -32,6 +32,7 @@ stages:
             packageType: 'sdk'
             version: '6.0.x'
             performMultiLevelLookup: true
+
         - task: DotNetCoreCLI@2
           displayName: 'Restore Nuget Packages'
           inputs:
@@ -91,7 +92,7 @@ stages:
             displayName: 'Restore Nuget Packages'
             inputs:
               command: 'restore'
-              projects: '**/src/*.csproj'
+              projects: '**/src/**/*.csproj'
               feedsToUse: 'select'
               vstsFeed: 'GriesserElectronicAG'
         
@@ -104,7 +105,7 @@ stages:
             displayName: 'Build'
             inputs:
               command: 'build'
-              projects: '**/src/*.csproj'
+              projects: '**/src/**/*.csproj'
               arguments: '-p:Version=$(version) -c Release /p:CopyOutputSymbolsToPublishDirectory=false --no-restore'
 
           - task: CopyFiles@2
