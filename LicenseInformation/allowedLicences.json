@@ -1,6 +1,6 @@
 [
-  { "Id": "Apache", "Version": "2.0" },
-  { "Id": "MIT" },
-  { "Id": "MS-EULA" },
-  { "Id": "KNX-Tool-SoftwareLicense" }
+  "Apache-2.0",
+  "MIT",
+  "MS-EULA",
+  "KNX-Tool-SoftwareLicense"
 ]
