@@ -32,23 +32,11 @@ stages:
             packageType: 'sdk'
             version: '6.0.x'
             performMultiLevelLookup: true
-        - task: UseDotNet@2
-          displayName: 'Install .NET 5 SDK'
-          inputs:
-            packageType: 'sdk'
-            version: '5.0.x'
-            performMultiLevelLookup: true
-        - task: UseDotNet@2
-          displayName: 'Install .NET Core 3.1 SDK'
-          inputs:
-            packageType: 'sdk'
-            version: '3.1.x'
-            performMultiLevelLookup: true
         - task: DotNetCoreCLI@2
           displayName: 'Restore Nuget Packages'
           inputs:
             command: 'restore'
-            projects: '**/*.Test*.csproj'
+            projects: '**/test/**/*.csproj'
             feedsToUse: 'select'
             vstsFeed: 'GriesserElectronicAG'
             
@@ -56,14 +44,14 @@ stages:
           displayName: 'Build'
           inputs:
             command: 'build'
-            projects: '**/*.Test*.csproj'
+            projects: '**/test/**/*.csproj'
             arguments: '-c Release --no-restore'
         
         - task: DotNetCoreCLI@2
           displayName: 'Execute Unit Tests'
           inputs:
             command: 'test'
-            projects: '**/*.Test*.csproj'
+            projects: '**/test/**/*.csproj'
             arguments: '-c Release --collect:"XPlat Code Coverage"'
         
         - task: reportgenerator@4
