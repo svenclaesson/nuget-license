@@ -40,7 +40,7 @@ jobs:
           downloadPath: "$(licenseCheckerDownloadLocation)"
 
       - powershell: |
-          dotnet NugetUtility.dll -ji $(Agent.TempDirectory)/projects.json --allowed-license-types LicenseInformation/allowedLicences.json --include-transitive --ignored-packages LicenseInformation/packageFilter.json --licenseurl-to-license-mappings LicenseInformation/urlToLicenseMapping.json --override-package-information LicenseInformation/packageInfo.json
+          dotnet ./NugetUtility.dll -ji $(Agent.TempDirectory)/projects.json --allowed-license-types LicenseInformation/allowedLicences.json --include-transitive --ignored-packages LicenseInformation/packageFilter.json --licenseurl-to-license-mappings LicenseInformation/urlToLicenseMapping.json --override-package-information LicenseInformation/packageInfo.json
         failOnStderr: true
         workingDirectory: '$(licenseCheckerDownloadLocation)/NugetLicense'
         displayName: "Validate licenses of used Nuget packages"
