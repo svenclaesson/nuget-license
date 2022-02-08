@@ -27,17 +27,17 @@ jobs:
           version: "6.0.x"
           performMultiLevelLookup: true
 
-      - task: DownloadBuildArtifacts@0
+      - task: DownloadPipelineArtifact@2
         displayName: "Get NuGet license validation tool"
         inputs:
-          buildType: "specific"
+          source: "specific"
           project: "GE Services"
           pipeline: "NugetLicense"
           specificBuildWithTriggering: true
-          buildVersionToDownload: "latest"
-          downloadType: "single"
-          artifactName: "NugetLicense"
-          downloadPath: "$(licenseCheckerDownloadLocation)"
+          runVersion: "latest"
+          runBranch: 'refs/heads/master'
+          artifact: "NugetLicense"
+          path: "$(licenseCheckerDownloadLocation)"
 
       - task: DotNetCoreCLI@2
         displayName: "Validate licenses of used Nuget packages"
@@ -45,12 +45,3 @@ jobs:
           command: "custom"
           custom: "$(licenseCheckerDownloadLocation)/NugetLicense/NuGetUtility.dll"
           arguments: "-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/urlToLicenseMapping.json --override-package-information $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageInfo.json"
-      
-      - bash: |
-          tree $(licenseCheckerDownloadLocation)
-
-      - task: DeleteFiles@1
-        displayName: "cleanup utility"
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)
-          Contents: "**"
