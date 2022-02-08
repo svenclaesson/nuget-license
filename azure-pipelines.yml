@@ -109,6 +109,7 @@ stages:
               projects: '**/src/**/*.csproj'
               arguments: '-o $(Build.ArtifactStagingDirectory) -p:Version=$(version) -c Release --no-restore'
               zipAfterPublish: false
+              modifyOutputPath: false
         
           - task: CopyFiles@2
             displayName: 'prepare allowed license information for publishing'
