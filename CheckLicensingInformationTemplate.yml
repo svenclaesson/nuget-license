@@ -9,6 +9,9 @@ parameters:
 jobs:
 - job: 'license'
   displayName: 'Check Licensing Information'
+  variables:
+  - name: "licenseCheckerDownloadLocation"
+    value: "$(Agent.TempDirectory)/nugetLicenseChecker"
   steps:
   - task: FileList@1
     displayName: 'Generate list of involved projects'
@@ -27,7 +30,7 @@ jobs:
       buildVersionToDownload: 'latest'
       downloadType: 'single'
       artifactName: 'NugetLicense'
-      downloadPath: '$(Pipeline.Workspace)'
+      downloadPath: '$(licenseCheckerDownloadLocation)'
     
   - task: UseDotNet@2
     displayName: 'Install .NET 6 SDK'
@@ -40,5 +43,11 @@ jobs:
     displayName: 'Validate licenses of used Nuget packages'
     inputs:
       command: 'custom'
-      custom: '$(Pipeline.Workspace)/NugetLicense/NugetUtility.dll'
-      arguments: '-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(Pipeline.Workspace)/NugetLicense/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(Pipeline.Workspace)/NugetLicense/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(Pipeline.Workspace)/NugetLicense/LicenseInformation/urlToLicenseMapping.json --override-package-information $(Pipeline.Workspace)/NugetLicense/LicenseInformation/packageInfo.json'
+      custom: '$(licenseCheckerDownloadLocation)/NugetLicense/NugetUtility.dll'
+      arguments: '-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/urlToLicenseMapping.json --override-package-information $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageInfo.json'
+
+  - task: DeleteFiles@1
+    displayName: "cleanup utility"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: '**' 
