@@ -102,37 +102,13 @@ stages:
               postfix: $(versionPostfix)
         
           - task: DotNetCoreCLI@2
-            displayName: 'Build'
+            displayName: 'prepare license check application for publishing'
             inputs:
-              command: 'build'
+              command: 'publish'
+              publishWebProjects: false
               projects: '**/src/**/*.csproj'
-              arguments: '-p:Version=$(version) -c Release /p:CopyOutputSymbolsToPublishDirectory=false --no-restore'
-
-          - powershell: |
-              $appFolders = Get-ChildItem -Path . -Recurse -Filter */src/*/bin/Release/net6.0/ 
-              if($appFilders.Count -ne 1) {
-                $errorMessage="found $fileCount folders that match the search:"
-                Foreach ($folder IN $appFilders){
-                    $errorMessage = $errorMessage + [Environment]::NewLine + "`t" + $folder.FullName
-                }
-                Write-Error $errorMessage
-                exit 1
-              } else {
-                Write-Host "found "$appFolders[0].FullName
-                $message = "##vso[task.setvariable variable=folderWithAppToPublish]" + $appFolders[0].FullName
-                Write-Host $message
-              }
-            displayName: "Get folder containing application to publish"
-            workingDirectory: $(agent.builddirectory)
-
-          - task: CopyFiles@2
-            displayName: 'prepare application for publishing'
-            inputs:
-              SourceFolder: '$(folderWithAppToPublish)'
-              Contents: '**'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)'
-              CleanTargetFolder: true
-              preserveTimestamp: true
+              arguments: '-o $(Build.ArtifactStagingDirectory) -p:Version=$(version) -c Release --no-restore'
+              zipAfterPublish: false
         
           - task: CopyFiles@2
             displayName: 'prepare allowed license information for publishing'
