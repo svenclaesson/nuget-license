@@ -28,10 +28,6 @@ jobs:
       downloadType: 'single'
       artifactName: 'NugetLicense'
       downloadPath: '$(Pipeline.Workspace)'
-      
-  - powershell: |
-      New-Item -Path "$(Build.ArtifactStagingDirectory)" -Name "LicenseInformation" -ItemType "directory"
-    displayName: 'Create license information folder'
     
   - task: UseDotNet@2
     displayName: 'Install .NET 6 SDK'
