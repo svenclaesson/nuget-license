@@ -1,0 +1,134 @@
+name: "$(Rev:r)"
+
+trigger:
+- master
+
+resources:
+  repositories:
+    - repository: gitTooling
+      type: git
+      name: 'GE Services/GE.GitTooling'
+      ref: refs/tags/2.3.0
+
+variables:
+  ${{if eq(eq(variables['build.sourceBranch'], 'refs/heads/master'), false) }}:
+    versionPostfix: 'beta'
+  ${{if eq(eq(variables['build.sourceBranch'], 'refs/heads/master'), true) }}:
+    versionPostfix: ''
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Test
+    displayName: 'Test'
+    jobs:
+      - job: Test
+        displayName: 'Test'
+        steps:
+        - task: UseDotNet@2
+          displayName: 'Install .NET 6 SDK'
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+            performMultiLevelLookup: true
+        - task: DotNetCoreCLI@2
+          displayName: 'Restore Nuget Packages'
+          inputs:
+            command: 'restore'
+            projects: '**/tests/**/*.csproj'
+            feedsToUse: 'select'
+            vstsFeed: 'GriesserElectronicAG'
+            
+        - task: DotNetCoreCLI@2
+          displayName: 'Build'
+          inputs:
+            command: 'build'
+            projects: '**/tests/**/*.csproj'
+            arguments: '-c Release --no-restore'
+        
+        - task: DotNetCoreCLI@2
+          displayName: 'Execute Unit Tests'
+          inputs:
+            command: 'test'
+            projects: '**/tests/**/*.csproj'
+            arguments: '-c Release --collect:"XPlat Code Coverage"'
+        
+        - task: reportgenerator@4
+          displayName: 'Generate code coverage report'
+          inputs:
+            reports: '$(Agent.TempDirectory)/**/*cobertura.xml'
+            targetdir: '$(Agent.TempDirectory)/coveragereport'
+            reporttypes: 'Cobertura'
+            tag: 
+        
+        - task: PublishCodeCoverageResults@1
+          displayName: 'Publish code coverage report'
+          inputs:
+            codeCoverageTool: 'Cobertura'
+            summaryFileLocation: '$(Agent.TempDirectory)/coveragereport/*.xml'
+      
+  - template: "GenerateVersionNumberStage.yml@gitTooling"
+    parameters:
+      repositoryName: 'gitTooling'
+        
+  - stage: BuildAndPublish
+    displayName: 'Build And Publish'
+    dependsOn:
+      - Test
+      - VersionNumber
+    jobs:
+      - job: BuildAndPublish
+        displayName: 'Build and Publish'
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET 6 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '6.0.x'
+              performMultiLevelLookup: true
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore Nuget Packages'
+            inputs:
+              command: 'restore'
+              projects: '**/src/*.csproj'
+              feedsToUse: 'select'
+              vstsFeed: 'GriesserElectronicAG'
+        
+          - template: "ReadGeneratedVersionNumberSteps.yml@gitTooling"
+            parameters:
+              outputVariableName: 'version'
+              postfix: $(versionPostfix)
+        
+          - task: DotNetCoreCLI@2
+            displayName: 'Build'
+            inputs:
+              command: 'build'
+              projects: '**/src/*.csproj'
+              arguments: '-p:Version=$(version) -c Release /p:CopyOutputSymbolsToPublishDirectory=false --no-restore'
+
+          - task: CopyFiles@2
+            displayName: 'prepare application for publishing'
+            inputs:
+              SourceFolder: '$(agent.builddirectory)'
+              Contents: '**/src/bin/Release/net6.0/**'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+              CleanTargetFolder: true
+              flattenFolders: true
+              preserveTimestamp: true
+        
+          - task: CopyFiles@2
+            displayName: 'prepare allowed license information for publishing'
+            inputs:
+              SourceFolder: 'LicenseInformation'
+              Contents: '**'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/LicenseInformation'
+              OverWrite: true
+              preserveTimestamp: true
+        
+          - task: PublishBuildArtifacts@1
+            displayName: 'publish artifacts'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'NugetLicense'
+              publishLocation: 'Container'

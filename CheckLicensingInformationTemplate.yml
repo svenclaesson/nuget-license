@@ -1,0 +1,48 @@
+parameters:
+- name: projectSearchPattern
+  type: string
+  default: '*'
+- name: LicenseArtifactName
+  type: string
+  default: 'License'
+
+jobs:
+- job: 'license'
+  displayName: 'Check Licensing Information'
+  steps:
+  - task: FileList@1
+    displayName: 'Generate list of involved projects'
+    inputs:
+      RootFolder: '$(Build.SourcesDirectory)'
+      Matching: "${{ parameters.projectSearchPattern }}"
+      Destination: '$(Agent.TempDirectory)/projects.json'
+      
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Get NuGet license validation tool'
+    inputs:
+      buildType: 'specific'
+      project: 'GE Services'
+      pipeline: 'NugetLicense'
+      specificBuildWithTriggering: true
+      buildVersionToDownload: 'latest'
+      downloadType: 'single'
+      artifactName: 'NugetLicense'
+      downloadPath: '$(Pipeline.Workspace)'
+      
+  - powershell: |
+      New-Item -Path "$(Build.ArtifactStagingDirectory)" -Name "LicenseInformation" -ItemType "directory"
+    displayName: 'Create license information folder'
+    
+  - task: UseDotNet@2
+    displayName: 'Install .NET 6 SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '6.0.x'
+      performMultiLevelLookup: true
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Validate licenses of used Nuget packages'
+    inputs:
+      command: 'custom'
+      custom: '$(Pipeline.Workspace)/NugetLicense/NugetUtility.dll'
+      arguments: '-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(Pipeline.Workspace)/NugetLicense/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(Pipeline.Workspace)/NugetLicense/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(Pipeline.Workspace)/NugetLicense/LicenseInformation/urlToLicenseMapping.json --override-package-information $(Pipeline.Workspace)/NugetLicense/LicenseInformation/packageInfo.json'
