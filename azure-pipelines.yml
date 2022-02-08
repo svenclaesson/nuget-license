@@ -36,7 +36,7 @@ stages:
           displayName: 'Restore Nuget Packages'
           inputs:
             command: 'restore'
-            projects: '**/test/**/*.csproj'
+            projects: '**/tests/**/*.csproj'
             feedsToUse: 'select'
             vstsFeed: 'GriesserElectronicAG'
             
@@ -44,14 +44,14 @@ stages:
           displayName: 'Build'
           inputs:
             command: 'build'
-            projects: '**/test/**/*.csproj'
+            projects: '**/tests/**/*.csproj'
             arguments: '-c Release --no-restore'
         
         - task: DotNetCoreCLI@2
           displayName: 'Execute Unit Tests'
           inputs:
             command: 'test'
-            projects: '**/test/**/*.csproj'
+            projects: '**/tests/**/*.csproj'
             arguments: '-c Release --collect:"XPlat Code Coverage"'
         
         - task: reportgenerator@4
