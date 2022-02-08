@@ -1,2 +1,7 @@
 [
+    {
+        "Id": "stateless",
+        "Version": "5.11.0",
+        "License": "Apache-2.0"
+    }
 ]
