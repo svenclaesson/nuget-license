@@ -35,9 +35,17 @@ jobs:
           pipeline: "NugetLicense"
           specificBuildWithTriggering: true
           runVersion: "latest"
-          runBranch: 'refs/heads/master'
+          runBranch: "refs/heads/master"
           artifact: "NugetLicense"
           path: "$(licenseCheckerDownloadLocation)"
+
+      - task: DotNetCoreCLI@2
+        displayName: "restore nuget packages"
+        inputs:
+          command: "restore"
+          projects: "$(Build.SourcesDirectory)/${{ parameters.projectSearchPattern }}"
+          feedsToUse: "select"
+          vstsFeed: "GriesserElectronicAG"
 
       - task: DotNetCoreCLI@2
         displayName: "Validate licenses of used Nuget packages"
