@@ -43,8 +43,11 @@ jobs:
         displayName: "Validate licenses of used Nuget packages"
         inputs:
           command: "custom"
-          custom: "$(licenseCheckerDownloadLocation)/NugetLicense/NugetUtility.dll"
+          custom: "$(licenseCheckerDownloadLocation)/NugetLicense/NuGetUtility.dll"
           arguments: "-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/urlToLicenseMapping.json --override-package-information $(licenseCheckerDownloadLocation)/NugetLicense/LicenseInformation/packageInfo.json"
+      
+      - bash: |
+          tree $(licenseCheckerDownloadLocation)
 
       - task: DeleteFiles@1
         displayName: "cleanup utility"
