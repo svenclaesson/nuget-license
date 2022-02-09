@@ -1,7 +1,19 @@
 name: "$(Rev:r)"
 
 trigger:
-- master
+  batch: true
+  branches:
+    include:
+      - "master"
+      - "main"
+  paths:
+    include:
+      - "*" # include everything
+    exclude:
+      - "LicenseInformation/*"
+      - ".*"
+      - "LICENSE"
+      - "README.md"
 
 resources:
   repositories:
