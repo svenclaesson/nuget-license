@@ -10,7 +10,6 @@ trigger:
     include:
       - "*" # include everything
     exclude:
-      - "LicenseInformation/*"
       - ".*"
       - "LICENSE"
       - "README.md"
