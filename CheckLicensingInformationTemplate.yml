@@ -47,7 +47,7 @@ jobs:
             $ignoreList = Get-Content packageFilter.json | ConvertFrom-Json
             $ignoreListUpdated = $ignoreList + '${{ ignoredPackage }}'
             ConvertTo-Json -InputObject $ignoreListUpdated | Out-File -FilePath packageFilter.json
-            Write-Host "updated packageFilter.json:""
+            Write-Host "updated packageFilter.json:"
             Get-Content -Path packageFilter.json
           displayName: "Adding NuGet package ${{ ignoredPackage }} to ignore list"
           workingDirectory: $(licenseCheckerDownloadLocation)/LicenseInformation
