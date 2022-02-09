@@ -11,5 +11,6 @@
   "GE.Heimdall.RpcSdk",
   "GE.Azure.Serialization",
   "GE.Heimdall.WindApp.Data",
-  "GE.Heimdall.ConfigDb"
+  "GE.Heimdall.ConfigDb",
+  "NetIT.Connector"
 ]
