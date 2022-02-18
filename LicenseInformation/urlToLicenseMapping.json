@@ -47,5 +47,6 @@
   "https://raw.githubusercontent.com/Microsoft/dotnet/master/LICENSE": "MIT",
   "https://github.com/dotnet/core-setup/blob/master/LICENSE.TXT": "MIT",
   "https://raw.github.com/JamesNK/Newtonsoft.Json.Bson/master/LICENSE.md": "MIT",
-  "https://support.knx.org/hc/en-us/articles/360002909959": "KNX-Tool-SoftwareLicense"
+  "https://support.knx.org/hc/en-us/articles/360002909959": "KNX-Tool-SoftwareLicense",
+  "https://raw.githubusercontent.com/Humanizr/Humanizer/master/LICENSE": "MIT"
 }

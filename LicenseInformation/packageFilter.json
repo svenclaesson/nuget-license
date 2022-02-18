@@ -12,5 +12,6 @@
   "GE.Azure.Serialization",
   "GE.Heimdall.WindApp.Data",
   "GE.Heimdall.ConfigDb",
-  "NetIT.Connector"
+  "NetIT.Connector",
+  "GE.Heimdall.Bifroest.PluginSdk"
 ]
