@@ -13,5 +13,6 @@
   "GE.Heimdall.WindApp.Data",
   "GE.Heimdall.ConfigDb",
   "NetIT.Connector",
-  "GE.Heimdall.Bifroest.PluginSdk"
+  "GE.Heimdall.Bifroest.PluginSdk",
+  "Microsoft.Data.SqlClient.SNI.runtime"
 ]
