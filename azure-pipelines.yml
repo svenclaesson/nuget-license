@@ -19,13 +19,7 @@ resources:
     - repository: gitTooling
       type: git
       name: 'GE Services/GE.GitTooling'
-      ref: refs/tags/2.3.0
-
-variables:
-  ${{if eq(eq(variables['build.sourceBranch'], 'refs/heads/master'), false) }}:
-    versionPostfix: 'beta'
-  ${{if eq(eq(variables['build.sourceBranch'], 'refs/heads/master'), true) }}:
-    versionPostfix: ''
+      ref: refs/tags/3.0.0
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -48,7 +42,7 @@ stages:
           displayName: 'Restore Nuget Packages'
           inputs:
             command: 'restore'
-            projects: '**/tests/**/*.csproj'
+            projects: '**/*.sln'
             feedsToUse: 'select'
             vstsFeed: 'GriesserElectronicAG'
             
@@ -56,14 +50,14 @@ stages:
           displayName: 'Build'
           inputs:
             command: 'build'
-            projects: '**/tests/**/*.csproj'
+            projects: '**/*.sln'
             arguments: '-c Release --no-restore'
         
         - task: DotNetCoreCLI@2
           displayName: 'Execute Unit Tests'
           inputs:
             command: 'test'
-            projects: '**/tests/**/*.csproj'
+            projects: '**/*.sln'
             arguments: '-c Release --collect:"XPlat Code Coverage"'
         
         - task: reportgenerator@4
@@ -99,18 +93,22 @@ stages:
               packageType: 'sdk'
               version: '6.0.x'
               performMultiLevelLookup: true
+
           - task: DotNetCoreCLI@2
             displayName: 'Restore Nuget Packages'
             inputs:
               command: 'restore'
-              projects: '**/src/**/*.csproj'
+              projects: '**/*.sln'
               feedsToUse: 'select'
               vstsFeed: 'GriesserElectronicAG'
         
-          - template: "ReadGeneratedVersionNumberSteps.yml@gitTooling"
+          - template: "ReadGeneratedVersionAsSemverSteps.yml@gitTooling"           
             parameters:
-              outputVariableName: 'version'
-              postfix: $(versionPostfix)
+              outputVariableName: "semverVersion"
+    
+          - template: "ReadGeneratedVersionDotSeperated.yml@gitTooling"
+            parameters:
+              outputVariableName: "dotSeperatedVersion"
         
           - task: DotNetCoreCLI@2
             displayName: 'prepare license check application for publishing'
@@ -118,7 +116,7 @@ stages:
               command: 'publish'
               publishWebProjects: false
               projects: '**/src/**/*.csproj'
-              arguments: '-o $(Build.ArtifactStagingDirectory) -p:Version=$(version) -c Release --no-restore'
+              arguments: '-o $(Build.ArtifactStagingDirectory) -p:Version=$(semverVersion) -p:AssemblyVersion=$(dotSeperatedVersion) -c Release --no-restore'
               zipAfterPublish: false
               modifyOutputPath: false
         
