@@ -14,5 +14,5 @@
   "GE.Heimdall.ConfigDb",
   "NetIT.Connector",
   "GE.Heimdall.Bifroest.PluginSdk",
-  "Microsoft.Data.SqlClient.SNI.runtime"
+  "GE.Heimdall.AzureIotBackend.Configuration.Model"
 ]
