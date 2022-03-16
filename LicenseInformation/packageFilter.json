@@ -15,5 +15,6 @@
   "GE.Heimdall.ConfigDb",
   "NetIT.Connector",
   "GE.Heimdall.Bifroest.PluginSdk",
-  "GE.Heimdall.AzureIotBackend.Configuration.Model"
+  "GE.Heimdall.AzureIotBackend.Configuration.Model",
+  "GE.Heimdall.Rpc.AppConfigSdk"
 ]
