@@ -16,5 +16,8 @@
   "NetIT.Connector",
   "GE.Heimdall.Bifroest.PluginSdk",
   "GE.Heimdall.AzureIotBackend.Configuration.Model",
-  "GE.Heimdall.Rpc.AppConfigSdk"
+  "GE.Heimdall.Rpc.AppConfigSdk",
+  "GE.Heimdall.SignalR.Sdk.Definition",
+  "GE.Heimdall.SignalR.Sdk.Client",
+  "GE.Heimdall.SignalR.Sdk.Server"
 ]
