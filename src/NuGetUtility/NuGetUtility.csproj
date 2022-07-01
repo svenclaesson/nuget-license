@@ -18,6 +18,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release;TestWindows</Configurations>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>

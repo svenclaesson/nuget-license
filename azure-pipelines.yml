@@ -18,120 +18,133 @@ resources:
   repositories:
     - repository: gitTooling
       type: git
-      name: 'GE Services/GE.GitTooling'
+      name: "GE Services/GE.GitTooling"
       ref: refs/tags/3.0.0
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 stages:
   - stage: Test
-    displayName: 'Test'
+    displayName: "Test"
     jobs:
       - job: Test
-        displayName: 'Test'
+        displayName: "Test"
+        strategy:
+          matrix:
+            linux:
+              configuration: "Release"
+              imageName: "ubuntu-latest"
+            mac:       
+              configuration: "Release"
+              imageName: "macOS-latest"
+            windows:
+              configuration: "WindowsTest"
+              imageName: "windows-latest"
+        pool:
+          vmImage: $(imageName)
         steps:
-        - task: UseDotNet@2
-          displayName: 'Install .NET 6 SDK'
-          inputs:
-            packageType: 'sdk'
-            version: '6.0.x'
-            performMultiLevelLookup: true
+          - task: UseDotNet@2
+            displayName: "Install .NET 6 SDK"
+            inputs:
+              packageType: "sdk"
+              version: "6.0.x"
+              performMultiLevelLookup: true
 
-        - task: DotNetCoreCLI@2
-          displayName: 'Restore Nuget Packages'
-          inputs:
-            command: 'restore'
-            projects: '**/*.sln'
-            feedsToUse: 'select'
-            vstsFeed: 'GriesserElectronicAG'
-            
-        - task: DotNetCoreCLI@2
-          displayName: 'Build'
-          inputs:
-            command: 'build'
-            projects: '**/*.sln'
-            arguments: '-c Release --no-restore'
-        
-        - task: DotNetCoreCLI@2
-          displayName: 'Execute Unit Tests'
-          inputs:
-            command: 'test'
-            projects: '**/*.sln'
-            arguments: '-c Release --collect:"XPlat Code Coverage"'
-        
-        - task: reportgenerator@4
-          displayName: 'Generate code coverage report'
-          inputs:
-            reports: '$(Agent.TempDirectory)/**/*cobertura.xml'
-            targetdir: '$(Agent.TempDirectory)/coveragereport'
-            reporttypes: 'Cobertura'
-            tag: 
-        
-        - task: PublishCodeCoverageResults@1
-          displayName: 'Publish code coverage report'
-          inputs:
-            codeCoverageTool: 'Cobertura'
-            summaryFileLocation: '$(Agent.TempDirectory)/coveragereport/*.xml'
-      
+          - task: DotNetCoreCLI@2
+            displayName: "Restore Nuget Packages"
+            inputs:
+              command: "restore"
+              projects: "**/*.sln"
+              feedsToUse: "select"
+              vstsFeed: "GriesserElectronicAG"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Build"
+            inputs:
+              command: "build"
+              projects: "**/*.sln"
+              arguments: "-c $(configuration) --no-restore"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Execute Unit Tests"
+            inputs:
+              command: "test"
+              projects: "**/*.sln"
+              arguments: '-c $(configuration) --collect:"XPlat Code Coverage"'
+
+          - task: reportgenerator@4
+            displayName: "Generate code coverage report"
+            inputs:
+              reports: "$(Agent.TempDirectory)/**/*cobertura.xml"
+              targetdir: "$(Agent.TempDirectory)/coveragereport"
+              reporttypes: "Cobertura"
+              tag:
+
+          - task: PublishCodeCoverageResults@1
+            displayName: "Publish code coverage report"
+            inputs:
+              codeCoverageTool: "Cobertura"
+              summaryFileLocation: "$(Agent.TempDirectory)/coveragereport/*.xml"
+
   - template: "GenerateVersionNumberStage.yml@gitTooling"
     parameters:
-      repositoryName: 'gitTooling'
-        
+      repositoryName: "gitTooling"
+
   - stage: BuildAndPublish
-    displayName: 'Build And Publish'
+    displayName: "Build And Publish"
     dependsOn:
       - Test
       - VersionNumber
     jobs:
       - job: BuildAndPublish
-        displayName: 'Build and Publish'
+        displayName: "Build and Publish"
         steps:
           - task: UseDotNet@2
-            displayName: 'Install .NET 6 SDK'
+            displayName: "Install .NET 6 SDK"
             inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
+              packageType: "sdk"
+              version: "6.0.x"
               performMultiLevelLookup: true
 
           - task: DotNetCoreCLI@2
-            displayName: 'Restore Nuget Packages'
+            displayName: "Restore Nuget Packages"
             inputs:
-              command: 'restore'
-              projects: '**/*.sln'
-              feedsToUse: 'select'
-              vstsFeed: 'GriesserElectronicAG'
-        
-          - template: "ReadGeneratedVersionAsSemverSteps.yml@gitTooling"           
+              command: "restore"
+              projects: "**/*.sln"
+              feedsToUse: "select"
+              vstsFeed: "GriesserElectronicAG"
+
+          - template: "ReadGeneratedVersionAsSemverSteps.yml@gitTooling"
             parameters:
               outputVariableName: "semverVersion"
-    
+
           - template: "ReadGeneratedVersionDotSeperated.yml@gitTooling"
             parameters:
               outputVariableName: "dotSeperatedVersion"
-        
+
           - task: DotNetCoreCLI@2
-            displayName: 'prepare license check application for publishing'
+            displayName: "prepare license check application for publishing"
             inputs:
-              command: 'publish'
+              command: "publish"
               publishWebProjects: false
-              projects: '**/src/**/*.csproj'
-              arguments: '-o $(Build.ArtifactStagingDirectory) -p:Version=$(semverVersion) -p:AssemblyVersion=$(dotSeperatedVersion) -c Release --no-restore'
+              projects: "**/src/**/*.csproj"
+              arguments: "-o $(Build.ArtifactStagingDirectory) -p:Version=$(semverVersion) -p:AssemblyVersion=$(dotSeperatedVersion) -c Release --no-restore"
               zipAfterPublish: false
               modifyOutputPath: false
-        
+
           - task: CopyFiles@2
-            displayName: 'prepare allowed license information for publishing'
+            displayName: "prepare allowed license information for publishing"
             inputs:
-              SourceFolder: 'LicenseInformation'
-              Contents: '**'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/LicenseInformation'
+              SourceFolder: "LicenseInformation"
+              Contents: "**"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/LicenseInformation"
               OverWrite: true
               preserveTimestamp: true
-        
+
           - task: PublishBuildArtifacts@1
-            displayName: 'publish artifacts'
+            displayName: "publish artifacts"
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'NugetLicense'
-              publishLocation: 'Container'
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "NugetLicense"
+              publishLocation: "Container"
