@@ -46,22 +46,26 @@ jobs:
           path: "$(licenseCheckerDownloadLocation)"
 
       - ${{ each ignoredPackage in parameters.additionalIgnoredPackages }}:
-        - powershell: |
-            $ignoreList = Get-Content packageFilter.json | ConvertFrom-Json
-            $ignoreListUpdated = $ignoreList + '${{ ignoredPackage }}'
-            ConvertTo-Json -InputObject $ignoreListUpdated | Out-File -FilePath packageFilter.json
-            Write-Host "updated packageFilter.json:"
-            Get-Content -Path packageFilter.json
-          displayName: "Adding NuGet package ${{ ignoredPackage }} to ignore list"
-          workingDirectory: $(licenseCheckerDownloadLocation)/LicenseInformation
+          - powershell: |
+              $ignoreList = Get-Content packageFilter.json | ConvertFrom-Json
+              $ignoreListUpdated = $ignoreList + '${{ ignoredPackage }}'
+              ConvertTo-Json -InputObject $ignoreListUpdated | Out-File -FilePath packageFilter.json
+              Write-Host "updated packageFilter.json:"
+              Get-Content -Path packageFilter.json
+            displayName: "Adding NuGet package ${{ ignoredPackage }} to ignore list"
+            workingDirectory: $(licenseCheckerDownloadLocation)/LicenseInformation
 
-      - task: DotNetCoreCLI@2
-        displayName: "restore nuget packages"
-        inputs:
-          command: "restore"
-          projects: "$(Build.SourcesDirectory)/${{ parameters.projectSearchPattern }}"
-          feedsToUse: "select"
-          vstsFeed: "GriesserElectronicAG"
+      - ${{ each step in parameters.nugetRestoreSteps }}:
+          - ${{ step }}
+
+      - ${{ if not(eq(length(parameters.nugetRestoreSteps), 0)) }}:
+          - task: DotNetCoreCLI@2
+            displayName: "restore nuget packages"
+            inputs:
+              command: "restore"
+              projects: "$(Build.SourcesDirectory)/${{ parameters.projectSearchPattern }}"
+              feedsToUse: "select"
+              vstsFeed: "GriesserElectronicAG"
 
       - task: DotNetCoreCLI@2
         displayName: "Validate licenses of used Nuget packages"
