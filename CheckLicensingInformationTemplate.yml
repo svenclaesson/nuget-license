@@ -8,6 +8,9 @@ parameters:
   - name: additionalIgnoredPackages
     type: object
     default: []
+  - name: nugetRestoreSteps
+    type: stepList
+    default: []
 
 jobs:
   - job: "license"
