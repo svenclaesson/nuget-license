@@ -39,7 +39,7 @@ stages:
               configuration: "Release"
               imageName: "macOS-latest"
             windows:
-              configuration: "WindowsTest"
+              configuration: "TestWindows"
               imageName: "windows-latest"
         pool:
           vmImage: $(imageName)
