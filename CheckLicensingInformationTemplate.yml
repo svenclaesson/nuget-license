@@ -58,7 +58,7 @@ jobs:
       - ${{ each step in parameters.nugetRestoreSteps }}:
           - ${{ step }}
 
-      - ${{ if not(eq(length(parameters.nugetRestoreSteps), 0)) }}:
+      - ${{ if eq(length(parameters.nugetRestoreSteps), 0) }}:
           - task: DotNetCoreCLI@2
             displayName: "restore nuget packages"
             inputs:
