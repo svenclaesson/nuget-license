@@ -54,5 +54,6 @@
   "https://www.nuget.org/packages/Microsoft.Data.SqlClient.SNI.runtime/2.1.1/license": "Microsoft.Data.SqlClient.SNI.runtime.license",
   "https://www.nuget.org/packages/ServiceWire/5.3.6/license": "Apache-2.0",
   "https://www.nuget.org/packages/ServiceWire/5.4.0/license": "Apache-2.0",
-  "https://www.nuget.org/packages/MudBlazor/6.0.10/license": "MIT"
+  "https://www.nuget.org/packages/MudBlazor/6.0.10/license": "MIT",
+  "https://raw.githubusercontent.com/jdiamond/Nustache/master/LICENSE.txt": "MIT"
 }
