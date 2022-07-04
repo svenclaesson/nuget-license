@@ -72,4 +72,12 @@ jobs:
         inputs:
           command: "custom"
           custom: "$(licenseCheckerDownloadLocation)/NuGetUtility.dll"
-          arguments: "-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(licenseCheckerDownloadLocation)/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(licenseCheckerDownloadLocation)/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(licenseCheckerDownloadLocation)/LicenseInformation/urlToLicenseMapping.json --override-package-information $(licenseCheckerDownloadLocation)/LicenseInformation/packageInfo.json"
+          arguments: "-ji $(Agent.TempDirectory)/projects.json --allowed-license-types $(licenseCheckerDownloadLocation)/LicenseInformation/allowedLicences.json --include-transitive --ignored-packages $(licenseCheckerDownloadLocation)/LicenseInformation/packageFilter.json --licenseurl-to-license-mappings $(licenseCheckerDownloadLocation)/LicenseInformation/urlToLicenseMapping.json --override-package-information $(licenseCheckerDownloadLocation)/LicenseInformation/packageInfo.json
+          -d $(licenseCheckerDownloadLocation)"
+          
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish license information'
+        inputs:
+          PathtoPublish: "$(licenseCheckerDownloadLocation)"
+          ArtifactName: "${{ parameters.LicenseArtifactName }}"
+          publishLocation: "Container"
